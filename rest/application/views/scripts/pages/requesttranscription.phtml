@@ -1,0 +1,41 @@
+<?php echo '<?xml version="1.0" encoding="UTF-8" ?>'; ?>
+<request_transcribe_page>
+	<info></info>
+	<status><?php echo $this->status; ?></status>
+	<?php if($this->status == "OK"): ?>
+	<curuser/>
+	<unshear><?php echo $this->book->getShear(); ?></unshear>
+	<page_no><?php echo $this->page->getPageNo(); ?></page_no>
+	<lines>
+		<?php foreach($this->lines as $line): ?>
+		<line>
+			<line_no><?php echo $line->getLineNo(); ?></line_no>
+			<y1><?php echo $line->getYTop(); ?></y1>
+			<y2><?php echo $line->getYBot(); ?></y2>
+			<file_line_path><?php if ($this->imageAvailable) {echo ("/rest/image/".str_replace(" ", "+", $this->institution->getMonkId())."/".$this->collection->getMonkId()."/".$this->book->getMonkDir()."/".$this->page->getPageNo()."/".$line->getLineNo());} ?></file_line_path>
+			<labels>
+			<?php foreach($this->lineLabels[$line->getLineNo()] as $label): ?>
+				<label>
+					<x><?php echo $label->getX(); ?></x>
+					<y><?php echo $label->getY(); ?></y>
+					<width><?php echo $label->getWidth(); ?></width>
+					<height><?php echo $label->getHeight(); ?></height>
+					<roi>
+						<?php foreach ($label->getRoiArray() as $xy): ?>
+						<pos>
+							<x><?php echo $xy['x']; ?></x>
+							<y><?php echo $xy['y']; ?></y>
+						</pos>
+						<?php endforeach; ?>
+					</roi>
+					<text><?php echo $label->getLabelText(); ?></text>
+					<status><?php echo $label->getStatus(); ?></status>
+					<zone>HUMAN</zone>
+				</label>
+			<?php endforeach; ?>
+			</labels>
+		</line>
+		<?php endforeach; ?>
+	</lines>
+	<?php endif; ?>
+</request_transcribe_page>
